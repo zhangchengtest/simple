@@ -1,8 +1,8 @@
 package web
 
 import (
-	"github.com/mlogclub/simple/common/structs"
-	"github.com/mlogclub/simple/sqls"
+	"github.com/zhangchengtest/simple/common/structs"
+	"github.com/zhangchengtest/simple/sqls"
 )
 
 type JsonResult struct {

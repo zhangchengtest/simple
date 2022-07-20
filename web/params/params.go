@@ -3,15 +3,15 @@ package params
 import (
 	"errors"
 	"fmt"
-	"github.com/mlogclub/simple/sqls"
+	"github.com/zhangchengtest/simple/sqls"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/iris-contrib/schema"
 	"github.com/kataras/iris/v12"
-	"github.com/mlogclub/simple/common/dates"
-	"github.com/mlogclub/simple/common/strs"
+	"github.com/zhangchengtest/simple/common/dates"
+	"github.com/zhangchengtest/simple/common/strs"
 )
 
 var (
