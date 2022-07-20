@@ -18,14 +18,13 @@ var (
 	sqlDB *sql.DB
 )
 
-func Open(dsn string, config *gorm.Config, maxIdleConns, maxOpenConns int, models ...interface{}) (err error) {
+func Open(dsn string, config *gorm.Config, maxIdleConns, maxOpenConns int) (err error) {
 	if config == nil {
 		config = &gorm.Config{}
 	}
 
 	if config.NamingStrategy == nil {
 		config.NamingStrategy = schema.NamingStrategy{
-			TablePrefix:   "t_",
 			SingularTable: true,
 		}
 	}
@@ -42,9 +41,9 @@ func Open(dsn string, config *gorm.Config, maxIdleConns, maxOpenConns int, model
 		log.Error(err)
 	}
 
-	if err = db.AutoMigrate(models...); nil != err {
-		log.Errorf("auto migrate tables failed: %s", err.Error())
-	}
+	//if err = db.AutoMigrate(models...); nil != err {
+	//	log.Errorf("auto migrate tables failed: %s", err.Error())
+	//}
 	return
 }
 

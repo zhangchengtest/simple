@@ -3,13 +3,13 @@ package params
 import (
 	"errors"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/zhangchengtest/simple/sqls"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/iris-contrib/schema"
-	"github.com/kataras/iris/v12"
 	"github.com/zhangchengtest/simple/common/dates"
 	"github.com/zhangchengtest/simple/common/strs"
 )
@@ -29,62 +29,62 @@ func paramError(name string) error {
 }
 
 // ReadForm read object from FormData
-func ReadForm(ctx iris.Context, obj interface{}) error {
-	values := ctx.FormValues()
+func ReadForm(ctx *gin.Context, obj interface{}) error {
+	values := ctx.Request.PostForm
 	if len(values) == 0 {
 		return nil
 	}
 	return decoder.Decode(obj, values)
 }
 
-func FormValue(ctx iris.Context, name string) string {
-	return ctx.FormValue(name)
+func PostForm(ctx *gin.Context, name string) string {
+	return ctx.PostForm(name)
 }
 
-func FormValueRequired(ctx iris.Context, name string) (string, error) {
-	str := FormValue(ctx, name)
+func FormValueRequired(ctx *gin.Context, name string) (string, error) {
+	str := PostForm(ctx, name)
 	if len(str) == 0 {
 		return "", errors.New("参数：" + name + "不能为空")
 	}
 	return str, nil
 }
 
-func FormValueDefault(ctx iris.Context, name, def string) string {
-	return ctx.FormValueDefault(name, def)
-}
+//func FormValueDefault(ctx *gin.Context, name, def string) string {
+//	return ctx.FormValueDefault(name, def)
+//}
 
-func FormValueInt(ctx iris.Context, name string) (int, error) {
-	str := ctx.FormValue(name)
+func FormValueInt(ctx *gin.Context, name string) (int, error) {
+	str := ctx.PostForm(name)
 	if str == "" {
 		return 0, paramError(name)
 	}
 	return strconv.Atoi(str)
 }
 
-func FormValueIntDefault(ctx iris.Context, name string, def int) int {
+func FormValueIntDefault(ctx *gin.Context, name string, def int) int {
 	if v, err := FormValueInt(ctx, name); err == nil {
 		return v
 	}
 	return def
 }
 
-func FormValueInt64(ctx iris.Context, name string) (int64, error) {
-	str := ctx.FormValue(name)
+func FormValueInt64(ctx *gin.Context, name string) (int64, error) {
+	str := ctx.PostForm(name)
 	if str == "" {
 		return 0, paramError(name)
 	}
 	return strconv.ParseInt(str, 10, 64)
 }
 
-func FormValueInt64Default(ctx iris.Context, name string, def int64) int64 {
+func FormValueInt64Default(ctx *gin.Context, name string, def int64) int64 {
 	if v, err := FormValueInt64(ctx, name); err == nil {
 		return v
 	}
 	return def
 }
 
-func FormValueInt64Array(ctx iris.Context, name string) []int64 {
-	str := ctx.FormValue(name)
+func FormValueInt64Array(ctx *gin.Context, name string) []int64 {
+	str := ctx.PostForm(name)
 	if str == "" {
 		return nil
 	}
@@ -103,8 +103,8 @@ func FormValueInt64Array(ctx iris.Context, name string) []int64 {
 	return ret
 }
 
-func FormValueStringArray(ctx iris.Context, name string) []string {
-	str := ctx.FormValue(name)
+func FormValueStringArray(ctx *gin.Context, name string) []string {
+	str := ctx.PostForm(name)
 	if len(str) == 0 {
 		return nil
 	}
@@ -123,16 +123,16 @@ func FormValueStringArray(ctx iris.Context, name string) []string {
 	return ret
 }
 
-func FormValueBool(ctx iris.Context, name string) (bool, error) {
-	str := ctx.FormValue(name)
+func FormValueBool(ctx *gin.Context, name string) (bool, error) {
+	str := ctx.PostForm(name)
 	if str == "" {
 		return false, paramError(name)
 	}
 	return strconv.ParseBool(str)
 }
 
-func FormValueBoolDefault(ctx iris.Context, name string, def bool) bool {
-	str := ctx.FormValue(name)
+func FormValueBoolDefault(ctx *gin.Context, name string, def bool) bool {
+	str := ctx.PostForm(name)
 	if str == "" {
 		return def
 	}
@@ -144,8 +144,8 @@ func FormValueBoolDefault(ctx iris.Context, name string, def bool) bool {
 }
 
 // 从请求中获取日期
-func FormDate(ctx iris.Context, name string) *time.Time {
-	value := FormValue(ctx, name)
+func FormDate(ctx *gin.Context, name string) *time.Time {
+	value := PostForm(ctx, name)
 	if strs.IsBlank(value) {
 		return nil
 	}
@@ -158,7 +158,7 @@ func FormDate(ctx iris.Context, name string) *time.Time {
 	return nil
 }
 
-func GetPaging(ctx iris.Context) *sqls.Paging {
+func GetPaging(ctx *gin.Context) *sqls.Paging {
 	page := FormValueIntDefault(ctx, "page", 1)
 	limit := FormValueIntDefault(ctx, "limit", 20)
 	if page <= 0 {

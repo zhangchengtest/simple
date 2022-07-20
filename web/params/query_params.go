@@ -1,17 +1,17 @@
 package params
 
 import (
-	"github.com/kataras/iris/v12"
+	"github.com/gin-gonic/gin"
 	"github.com/zhangchengtest/simple/common/strs/strcase"
 	"github.com/zhangchengtest/simple/sqls"
 )
 
 type QueryParams struct {
-	Ctx iris.Context
+	Ctx *gin.Context
 	sqls.Cnd
 }
 
-func NewQueryParams(ctx iris.Context) *QueryParams {
+func NewQueryParams(ctx *gin.Context) *QueryParams {
 	return &QueryParams{
 		Ctx: ctx,
 	}
@@ -22,7 +22,7 @@ func (q *QueryParams) getValueByColumn(column string) string {
 		return ""
 	}
 	fieldName := strcase.ToLowerCamel(column)
-	return q.Ctx.FormValue(fieldName)
+	return q.Ctx.PostForm(fieldName)
 }
 
 func (q *QueryParams) EqByReq(column string) *QueryParams {
